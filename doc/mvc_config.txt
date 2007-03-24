@@ -1,0 +1,244 @@
+The config.xml file is where all of the model, view, and controller metadata is
+soft coded. This file is meant to provide some basic understanding of the
+syntax and semantics of this file. The configuration file has 5 main sections
+each of which is documented below.
+
+Common Attributes
+=================
+Many of the elements in the config.xml file use common attributes. Those
+attributes are documented here and referenced below where they apply.
+
+  * id - The document id of the element, used for referring to the page
+         elsewhere in the config.xml file.
+  * python-class - A reference to a python class. The syntax is module::class
+                   where module can have many dots in it. E.g. foo.bar::baz
+                   will referer to the baz class defined in package foo.bar
+                   which is imported just before instantiation.
+
+
+<pages>
+=======
+
+A page is an instance of pywebmvc.framework.core.Page or one of its subclasses which knows how to
+render the presentation of a particular outcome of an action. Each page
+instance is created just once and used to handle many requests. The <page>
+element takes just two common attributes both of which are required:
+
+  * id
+  * python-class
+
+<actions>
+=========
+
+The action is the where each controller object is defined to handle a
+particular user action. The <action> element is the most importatn element in
+the config.xml file and is used to associate a url to an Action class. The
+action class takes two common attributes: id and python-class. Additionally,
+you can provide the following attributes:
+
+* path - The web url from which the controller will pass initial control to the
+         action. If the PythonOption pyWebMvcExtension is set in the apache
+         configuration then it will be appended to the path provided here.
+         TODO: Add an application context apache option which can be prepended
+         to the path.
+
+* form - Optional. The id of the form which is either displayed by or posted
+         to this action.
+
+* renderer-factory - Optional. The id of the renderer factory to use for
+                     rendering the form elements associated with this action.
+
+Each action takes the following sub elements:
+
+<forward> - defines a local "outcome" for this action and where to go when that
+outcome occurs. A forward takes the following attributes:
+ * name - the name of the forward which can be looked up from the action
+          mapping passed in to the action handler.
+ * global-forward - the id of a page or action to handle the request next.
+
+ * redirect - only valid when using an id of another action. Will cause the
+              browser to redirect to the next action instead of handling it
+              locally.
+
+<attribute> - defines a name/value pair to be used for customizing generic
+actions. These attributes can be accessed from the attributes property which
+is a dictionary on the mapping object passed into the action handler. An
+attribute takes the following attributes:
+ * name - any string
+ * value - any string
+
+<renderers>
+===========
+
+The renderers section is where the different presentation rendering factories
+are declared. Each factory provides a logical grouping of renderers to be used
+when rendering a form for an action. Not to worry though, each field can
+override the default renderer provided by the factory if needed.
+
+<factory> - declares a renderer factory instance and takes the following
+common attributes: id, python-class. Additionally, it takes the following
+attributes:
+
+  * default - when set to "true" this is the default rendering factory used for
+              all rendering not called out specifically by the field or the
+              action.
+
+<types>
+=======
+The types section declares data types for use by the form fields.
+
+<type> - The type element declares a data type and takes a common attribute of
+id. Additionally it can take the following attributes:
+
+  * input - the html input type to be used. The following values are
+            currently supported:
+              o submit - submits the form
+              o checkbox - a box that can be toggled on and off
+              o text - a single line of text input
+              o password - like text but the user's typing is replaced with *
+              o select - choices are presented from a list of possible values.
+                        a validation of type enumeration is used to validate
+                        and create the list of legal inputs when used with the
+                        standard renderer.
+  * max-length - Optional. The maximum string length of the inputted value.
+
+Each type can have multiple <validation> child elements which define the set of 
+legal formats for this type. More specific validation can be performed at the
+field level. When more than one validation is specified they must all be
+satisfied (boolean AND).
+
+<validation> elements take the following attributes:
+  * error-message - a resource bundle key which defines the error message to
+                    be displayed when the validation fails.
+  * type - the validation type determines how the child <value> elements are
+           interpreted. the following types of validation are currently
+           supported:
+             o enumeration - each <value> is a interpreted as a possible legal
+                             value. The value received from the user must match
+                             exactly to one of these <value>s.
+             o regex - only one <value> child is allowed. The contents of
+                       which are interpreted as a regular expression.
+             o function - only one <value> child is allowed and its contents
+                          are interpreted similarly to python-class. The
+                          imported object must be callable and accept three
+                          parameters: request, form, and fieldName. The value
+                          can to be retrieved by form[fieldName], by passing
+                          the value in this way, validator functions can
+                          perform field-value-dependant validation. The
+                          function should return an ActionErrors object.
+<value> elements enclose their value with a start and end tag. Additionally,
+they take the following attributes:
+  * label - A resource bundle key which can be used to display the value. Only
+            used in conjunction with enumerated an enumerated <validation>.
+
+<forms>
+=======
+The forms section doesn't define the form objects passed along with the
+request - the form object is a map of parameter names to values. Rather,
+the forms section defines the metadata about each form. This includes the data
+about how to map form values directly to model objects and back, how to
+display the form fields, how to validate each field, etc. The <forms> section
+is the most complex part of the configuration file, but it takes away most of
+the busy work that is usually required in web programming.
+
+<form> - defines the set of metadata for a form. Takes the following
+attributes:
+
+* id - the id of the form
+* python-class - Optional. The model layer python class which will be
+                 instantiated by the form transfer functionality and populated
+                 with the form data. Must expose a zero-argument constructor.
+* focus - Optional. the id of a <field> contained within the form. This input
+          focus will be set to that field when the page first loads.
+* method - The method by which the form will be sent to the web server. Can be
+           "post" or "get". Defaults to the browser default behavior for the
+           form.
+
+<form> elements can have the following child elements:
+
+<validation> - defines validation for the entire form. The field name will be
+               pywebmvc.framework.core.GLOBAL in this context for accessing the errors.
+
+<renderer> - defines the renderer class which is to be used for rendering a
+specific field or field type. <renderer> takes the following attributes:
+  * type - one of the following values:
+    o form  - renders a form and is the renderer primarily handling the layout
+              of the form on the page.
+    o fieldgroup - Renders a group of fields.
+    o fieldgrouplist - Renders a list of fieldgroups.
+    o select - Renders a drop down selection list.
+    o multiselect - Renders a multi-selection list.
+    o radio - Renders a single radio option
+    o radiolist - Renders a list of radio options
+                  (TODO: Rename this checkboxlist)
+    o hidden - Renders a hidden field
+    o hiddenlist - Renders a list of hidden fields
+    o text - Renders a text box
+    o textlist - Renders a list of text boxes
+    o password - Renders a password text box
+    o passwordlist - Renders a list of password text boxes
+    o readonly - Renders a read only field
+    o readonlylist - Renders a list of read only fields
+    o label - Renders a label
+    o instruction - Renders an instruction
+    o required - Renders the visual marker for a required field.
+    o errors - Renders a list of errors
+    o error - Renders a single error
+    o checkbox - Renders a checkbox
+    o submit - Renders a form submission button
+    o submitlist - Renders a list of form submission buttons.
+    
+  * python-class - A common attribute. The python class which will be used
+                   instead of the factory default renderer for the specified
+                   type.
+
+<fieldgroup> elements associate a group of fields together for both display
+and mapping to/from the model layer. It takes the following attributes:
+  * name - the name of the field group. Must be unique within the form.
+  * property - Optional. The python property on the parent model object which
+               represents the group of fields. If provided it means that this
+               group of fields' values are on an object stored at this
+               property.
+  * python-class - Optional. Similar to the python-class attribute of a form.
+  * label - The resource bundle key for displaying this group of fields.
+  * list - When set to "true", there is a list of these objects represented on
+           the form. Lists of lists are not supported, so once a field group
+           has been declared as a list, the fields/groups within it should not
+           be.
+  * required - The field group must be present on the form.
+  * required-error-message - Optional. Overrides the default message when the
+                             required field is missing. A resource bundle key.
+
+<fieldgroup> accepts the following child elements: <field>, <fieldgroup>,
+<renderer>, <attribute>
+
+<field> elements define a form field. The field element has the following
+attributes:
+  * name - The name of the field. Must be unique within the entire form.
+  * property - Optional. The property on the model layer python object where
+               this field is read/written when transferring.
+  * python-class - Optional. The python class for this field. Defaults to a
+                   string. This class constructor must take a single string
+                   parameter which is the value.
+  * required - Optional. When set to true the field must be entered by the
+               user or an error will result.
+  * required-error-message - Optional. Overrides the default message when the
+                             required field is missing. A resource bundle key.
+  * type - The id of the type defined elsewhere in the config.xml file.
+  * label - Optional. The message resource key used to display the name of the
+            field to the user.
+  * hidden - Optional. When set to "true" the field should be on the page but
+             not displayed to the user.
+  * class - Optional. The CSS class for the field.
+  * max-length - Optional. The maximum length for the field. Overrides the
+                 value provided by the type if it is smaller.
+  * instruction - Optional. A message resource key to give additional
+                  information about the field.
+  * default-value - Optional. If no value is present, this value will be used.
+  * list - Optional. When set to "true" this field is a list of values.
+
+Additionally, a field can have the following child elements:
+<validation> - see the description of this element under <type>.
+<errors> - see the description of this element under <form>.
+<attribute> - see the description of this element under <action>
+<renderer> - see the description of this element under <form>

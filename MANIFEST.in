@@ -1,0 +1,3 @@
+include INSTALL CHANGES REVISION VERSION Makefile install.sh uninstall.sh
+recursive-include src/web *.css *.js
+recursive-include src/resources *

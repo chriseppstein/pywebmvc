@@ -1,0 +1,155 @@
+.pyWebMvcField, .pyWebMvcLabel, .pyWebMvcWidget, .pyWebMvcFormTable
+{
+  /* No special styling for these pyWebMvc classes */
+}
+
+.pyWebMvcFormTable tr.pyWebMvcFieldRow td
+{
+  padding-top: 0.8em;
+}
+
+.pyWebMvcFormTable tr.pyWebMvcHiddenRow
+{
+  display: none;
+}
+
+ul.pyWebMvcErrors, .pyWebMvcError
+{
+  font-weight: bold;
+  color: #CC0000;
+}
+
+.pyWebMvcInstruction
+{
+  font-style: italic;
+}
+
+tr.pyWebMvcFieldRow
+{
+  /*empty for scripting purposes*/
+}
+
+tr.pyWebMvcErrorRow
+{
+  /*empty for scripting purposes*/
+}
+
+div.searchFormPopup
+{
+  position: absolute;
+  background-color: #B1E9FF;
+  border: 2px solid #0091d1;
+  z-index: 1;
+}
+
+table.list
+{
+  width: 95%;
+}
+table.list th
+{
+  background-color: #085D9E;
+  font-weight: bold;
+  color: white;
+  text-align: left;
+  font-size: 12px;
+  height: 18px;
+  vertical-align: top;
+  padding: 3px 5px 3px 5px;
+}
+
+table.list th div.sorted
+{
+  float: left;
+  margin-right: 5px;
+}
+
+table.list th a.sortable
+{
+  text-decoration: underline;
+  color: white;
+}
+
+table.list th.selected a.asc, 
+table.list th.selected a.desc
+{
+  width: 10px;
+  height: 18px;
+  float: left;
+  display: block;
+  text-decoration: none;
+}
+
+table.list th.selected a.asc span, 
+table.list th.selected a.desc span
+{
+  display: none;
+}
+
+table.list th.selected a.asc
+{
+  background-image: url(/images/sort_asc.gif);
+}
+table.list th.selected a.desc
+{
+  background-image: url(/images/sort_desc.gif);
+}
+
+table.list th.selected a.asc:hover
+{
+  background-image: url(/images/sort_asc_hover.gif);
+}
+table.list th.selected a.desc:hover
+{
+  background-image: url(/images/sort_desc_hover.gif);
+}
+
+table.list td
+{
+  color: #333333;
+  font-size: 11px;
+  padding: 2px 5px 2px 5px;
+}
+table.list tr.even td
+{
+  background-color: #FFFFFF;
+}
+
+table.list a.delete
+{
+  width: 14px;
+  height: 14px;
+  float: left;
+  display: block;
+  margin-right: 5px;
+  background-image: url(/images/delete2.gif);
+}
+
+table.list a.delete:hover
+{
+  background-image: url(/images/delete2_hover.gif);
+}
+
+table.list tr.odd td
+{
+  background-color: #F5F2F0;
+}
+
+table.list tr.hovered
+{
+  background-color: #BBBBBB;
+}
+
+table.list tr.error td
+{
+  font-weight: normal;
+  color: #CC0000;
+}
+
+table.list tr.warning td
+{
+  font-weight: normal;
+  color: #CC7E2B;
+}
+
+

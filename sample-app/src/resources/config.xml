@@ -1,0 +1,116 @@
+<!--  START OF COPYRIGHT NOTICE
+ Copyright (c) 2004-2005. Teneros, Inc.
+ All Rights Reserved.
+ END OF COPYRIGHT NOTICE -->
+<mvc-config>
+  <resources>
+    <resource-bundle locale="en" default="true">
+      <properties path="/tmp/addressBook/resources/MessageResources.properties"/>
+      <properties path="/opt/pywebmvc/resources/en/ToolMessageResources.properties"/>
+    </resource-bundle>
+  </resources>
+  <pages>
+    <page id="addressBookPage"
+          python-class="pages.address::AddressBookPage"/>
+    <page id="addressEntryPage"
+          python-class="pages.address::AddressEntryPage"/>
+  </pages>
+  <actions>
+    <action id="addressBook"
+            path="/addressBook"
+            python-class="pages.address::AddressBookAction"
+            >
+       <forward name="self" global-forward="addressBookPage"/>
+    </action>
+    <action id="addressEntry"
+            path="/addressEntry"
+            python-class="pages.address::AddressEntryAction"
+            form="addressEntryForm"
+            >
+       <forward name="self" global-forward="addressEntryPage"/>
+       <forward name="success" global-forward="addressBook" redirect="true"/>
+       <forward name="cancel" global-forward="addressBook" redirect="true"/>
+    </action>
+  </actions>
+  <forms>
+    <form id="addressEntryForm"  focus="firstName" python-class="backend.model::AddressBookItem" method="post">
+      <field name="id"
+        property="id"
+        type="string"
+        hidden="true"
+       />
+      <field name="firstName"
+        property="firstName"
+        type="string"
+        required="true"
+        label="label.firstName"
+       />
+      <field name="lastName"
+        property="lastName"
+        type="string"
+        required="true"
+        label="label.lastName"
+       >
+      </field>
+      <field name="street"
+        property="street"
+        type="string"
+        required="true"
+        label="label.street"
+       />
+      <field name="city"
+        property="city"
+        type="string"
+        required="true"
+        label="label.city"
+       />
+      <field name="state"
+        property="state"
+        type="string"
+        required="true"
+        label="label.state"
+      >
+      </field>
+      <field name="phone"
+        property="phone"
+        type="phonenumber"
+        required="true"
+        label="label.phone"
+       />
+      <field name="email"
+        property="email"
+        type="email"
+        required="true"
+        label="label.email"
+       />
+       <field name="do"
+        type="submit"
+        list="true"
+        default-value="save">
+        <validation type="enumeration">
+          <value label="label.save">save</value>
+          <value label="label.cancel">cancel</value>
+        </validation>
+      </field>
+    </form>
+  </forms>
+  <types>
+    <type id="string" input="text"/>
+    <type id="submit" input="submit"/>
+    <type id="phonenumber" input="text" max-length="20">
+      <validation type="regex" error-message="error.phone">
+        <value>^[0-9\(\)+. -]{10,20}$</value>
+      </validation>
+    </type>
+    <type id="email" input="text">
+      <validation type="regex" error-message="error.email">
+        <value>^[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]+$</value>
+      </validation>
+    </type>
+    <type id="integer" input="text">
+      <validation type="regex" error-message="error.integer">
+        <value>^-?[0-9]+$</value>
+      </validation>
+    </type>
+  </types>
+</mvc-config>

@@ -1,0 +1,18 @@
+div.pagersummary
+{
+  margin: 0; 
+  margin-top:1em; 
+  width: 95%;
+}
+
+
+div.pager, #editlink
+{
+  text-align: right;
+  width: 95%;
+}
+
+div.pager a
+{
+  text-decoration: none;
+}

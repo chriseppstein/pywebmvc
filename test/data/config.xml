@@ -1,0 +1,46 @@
+<mvc-config>
+  <error-handlers>
+    <error-handler
+      exception-class="pywebmvc.framework.core::ActionNotFoundException"
+      forward="notFound"/>
+  </error-handlers>
+  <!--renderers>
+    <factory id="tenerosFactory"
+             default="true"
+             python-class="pages.common::TenerosRendererFactory"/>
+    <factory id="statefulFactory"
+             python-class="pages.common::TenerosStatefulRendererFactory"/>
+    <factory id="wizardFactory"
+             python-class="pages.install_wizard::WizardRendererFactory"/>
+  </renderers-->
+  <forwards>
+    <forward id="simpleForward" path="/html/simple.html"/>
+  </forwards>
+  <pages>
+    <page id="stubbedPage"
+          python-class="testapp.actions::StubbedPage"/>
+  </pages>
+  <actions>
+    <action id="stubbed"
+            path="/stubbed"
+            python-class="testapp.actions::StubbedAction">
+      <forward name="success" global-forward="stubbedPage"/>
+      <forward name="simple" global-forward="simpleForward"/>
+    </action>
+  </actions>
+  <types>
+    <type id="submit" input="submit"/>
+    <type id="boolean" input="checkbox"/>
+    <type id="string" input="text"/>
+    <type id="longstring" input="textarea"/>
+    <type id="password" input="password"/>
+    <type id="file" input="file"/>
+    <type id="integer" input="text">
+      <validation type="regex" error-message="error.integer">
+        <value>^-?[0-9]+$</value>
+      </validation>
+    </type>
+  </types>
+  <forms>
+  </forms>
+</mvc-config>

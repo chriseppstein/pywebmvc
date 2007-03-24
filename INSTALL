@@ -1,0 +1,25 @@
+PyWebMVC System Requirements:
+    * Python >= 2.4
+    * mod_python >= 3.1
+    * apache >= 2.0.50
+
+To install PyWebMVC do the following:
+
+  python setup.py install
+
+To run the tests:
+
+  make test
+
+  Additional System Requirements:
+    * pmock >= 0.3
+
+To make the api documentation:
+
+  make api
+
+  Additional System Requirements:
+    * epydoc
+    * docutils >= 0.3
+
+  Docs will be browsable at <pywebmvc-root>/doc/api/index.html
